@@ -29,7 +29,6 @@ EOF
 echo "system> Welcome to the ImagicalMine installer!"
 echo "Most of this sript was originally written by ImagicalCorp and has their Coyright!"
 echo "The sript was later modyfyed by majovec."
-echo "system> Please choose which language you want to use during the installation:"
 echo
 echo "system> Select which PHP binary you want to install:"
 echo "system>   1) Linux x86(32-bit)"
