@@ -1,5 +1,5 @@
 #!/bin/bash
-# ImagicalMine Installation Script for Mac OS X and Linux(master)
+# ImagicalMine Installation Script for Mac OS X and Linux(master) - Copyright (c) 2016 Imagical Corporation. All rights reserved.
 #  _    _            _    _______ 
 # | |  | |    /\    | |  |__   __|
 # | |__| |   /  \   | |     | |   
@@ -27,8 +27,7 @@ EOF
 
 # shopt -s extglob
 echo "system> Welcome to the ImagicalMine installer!"
-echo "Most of this sript was originally written by ImagicalCorp and has their Coyright!"
-echo "The sript was later modyfyed by majovec."
+echo "system> This file is under copyright by the Imagical Corporation. Modifying this file is illegal without explicit permission from the author(s).
 echo
 echo "system> Select which PHP binary you want to install:"
 echo "system>   1) Linux x86(32-bit)"
