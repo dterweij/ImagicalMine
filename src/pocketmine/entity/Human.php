@@ -6,29 +6,7 @@
  */
 
 
-/*
- *
- *  _                       _           _ __  __ _
- * (_)                     (_)         | |  \/  (_)
- *  _ _ __ ___   __ _  __ _ _  ___ __ _| | \  / |_ _ __   ___
- * | | '_ ` _ \ / _` |/ _` | |/ __/ _` | | |\/| | | '_ \ / _ \
- * | | | | | | | (_| | (_| | | (_| (_| | | |  | | | | | |  __/
- * |_|_| |_| |_|\__,_|\__, |_|\___\__,_|_|_|  |_|_|_| |_|\___|
- *                     __/ |
- *                    |___/
- *
- * This program is a third party build by ImagicalMine.
- *
- * PocketMine is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * @author ImagicalMine Team
- * @link http://forums.imagicalcorp.ml/
- *
- *
-*/
+
 
 namespace pocketmine\entity;
 
@@ -38,7 +16,7 @@ use pocketmine\item\Item as ItemItem;
 use pocketmine\utils\UUID;
 use pocketmine\nbt\NBT;
 use pocketmine\network\protocol\AddPlayerPacket;
-use pocketmine\network\protocol\RemovePlayerPacket;
+use pocketmine\network\protocol\RemoveEntityPacket;
 use pocketmine\Player;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\nbt\tag\ListTag;
@@ -69,7 +47,7 @@ class Human extends Creature implements ProjectileSource, InventoryHolder
     public $eyeHeight = 1.62;
 
     protected $skin;
-    protected $skinName;
+    protected $skinID;
     protected $skinTransparency = false;
 
     /**
@@ -86,9 +64,9 @@ class Human extends Creature implements ProjectileSource, InventoryHolder
      *
      * @return unknown
      */
-    public function getSkinName()
+    public function getSkinID()
     {
-        return $this->skinName;
+        return $this->skinID;
     }
 
 
@@ -125,13 +103,13 @@ class Human extends Creature implements ProjectileSource, InventoryHolder
     /**
      *
      * @param string  $str
-     * @param bool    $skinName
+     * @param bool    $skinID
      * @param bool    $skinTransparency (optional)
      */
-    public function setSkin($str, $skinName, $skinTransparency = false)
+    public function setSkin($str, $skinID, $skinTransparency = false)
     {
         $this->skin = $str;
-        $this->skinName = $skinName;
+        $this->skinID = $skinID;
         $this->skinTransparency = $skinTransparency;
     }
 
@@ -146,9 +124,7 @@ class Human extends Creature implements ProjectileSource, InventoryHolder
     }
 
 
-    /**
-     *
-     */
+
     protected function initEntity()
     {
         $this->setDataFlag(self::DATA_PLAYER_FLAGS, self::DATA_PLAYER_FLAG_SLEEP, false);
@@ -215,9 +191,7 @@ class Human extends Creature implements ProjectileSource, InventoryHolder
     }
 
 
-    /**
-     *
-     */
+
     public function saveNBT()
     {
         parent::saveNBT();
@@ -266,7 +240,7 @@ class Human extends Creature implements ProjectileSource, InventoryHolder
         if (strlen($this->getSkinData()) > 0) {
             $this->namedtag->Skin = new CompoundTag("Skin", [
                     "Data" => new StringTag("Data", $this->getSkinData()),
-                    "Name" => new ByteTag("Name", $this->getSkinName())
+                    "Name" => new ByteTag("Name", $this->getskinID())
                 ]);
         }
     }
@@ -287,13 +261,11 @@ class Human extends Creature implements ProjectileSource, InventoryHolder
 
 
             if (!($this instanceof Player)) {
-                $this->server->updatePlayerListData($this->getUniqueId(), $this->getId(), $this->getName(), $this->skinName, $this->skin, [$player]);
+                $this->server->updatePlayerListData($this->getUniqueId(), $this->getId(), $this->getName(), $this->skinID, $this->skin, [$player]);
             }
 
-            $this->server->updatePlayerListData($this->getUniqueId(), $this->getId(), $this->getName(), $this->skinName, $this->skin, [$player]);
+            $this->server->updatePlayerListData($this->getUniqueId(), $this->getId(), $this->getName(), $this->skinID, $this->skin, [$player]);
 
-            $pk = new AddPlayerPacket();
-            $pk->uuid = $this->getUniqueId();
             $pk->username = $this->getName();
             $pk->eid = $this->getId();
             $pk->x = $this->x;
@@ -324,18 +296,15 @@ class Human extends Creature implements ProjectileSource, InventoryHolder
     public function despawnFrom(Player $player)
     {
         if (isset($this->hasSpawned[$player->getLoaderId()])) {
-            $pk = new RemovePlayerPacket();
+            $pk = new RemoveEntityPacket();
             $pk->eid = $this->getId();
-            $pk->clientId = $this->getUniqueId();
             $player->dataPacket($pk);
             unset($this->hasSpawned[$player->getLoaderId()]);
         }
     }
 
 
-    /**
-     *
-     */
+
     public function close()
     {
         if (!$this->closed) {

@@ -42,9 +42,7 @@ class WitherSkeleton extends Skeleton
     public $width = 0.938;
     public $lenght = 1.312;
 
-    /**
-     *
-     */
+
     public function initEntity()
     {
         $this->setMaxHealth(20);

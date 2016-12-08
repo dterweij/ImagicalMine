@@ -1,39 +1,5 @@
 <?php
-/**
- * src/pocketmine/Server.php
- *
- * @package default
- */
 
-
-/*
- *
- *  _                       _           _ __  __ _
- * (_)                     (_)         | |  \/  (_)
- *  _ _ __ ___   __ _  __ _ _  ___ __ _| | \  / |_ _ __   ___
- * | | '_ ` _ \ / _` |/ _` | |/ __/ _` | | |\/| | | '_ \ / _ \
- * | | | | | | | (_| | (_| | | (_| (_| | | |  | | | | | |  __/
- * |_|_| |_| |_|\__,_|\__, |_|\___\__,_|_|_|  |_|_|_| |_|\___|
- *                     __/ |
- *                    |___/
- *
- * This program is a third party build by ImagicalMine.
- *
- * ImagicalMine is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * @author ImagicalMine Team
- * @link http://forums.imagicalmine.net/
- *
- *
-*/
-
-/**
- * ImagicalMine is the Minecraft: PE multiplayer server software
- * Homepage: http://imagicalmine.net/
- */
 namespace pocketmine;
 
 use pocketmine\block\Block;
@@ -42,6 +8,10 @@ use pocketmine\command\CommandSender;
 use pocketmine\command\ConsoleCommandSender;
 use pocketmine\command\PluginIdentifiableCommand;
 use pocketmine\command\SimpleCommandMap;
+use pocketmine\command\Selectors;
+use pocketmine\command\selectors\All as SelectorAll;
+use pocketmine\command\selectors\Player as SelectorPlayer;
+use pocketmine\command\selectors\Random as SelectorRand;
 use pocketmine\entity\Arrow;
 use pocketmine\entity\Bat;
 use pocketmine\entity\Blaze;
@@ -268,6 +238,9 @@ class Server {
 
 	/** @var LevelMetadataStore */
 	private $levelMetadata;
+    
+	/** @var Selectors */
+	private $selectors = null;
 
 	/** @var Network */
 	private $network;
@@ -465,6 +438,17 @@ class Server {
 	}
 
 
+	/**
+	 *
+	 * @return Selectors
+	 */
+     
+     
+     public function getSelectors() {
+         return $this->selectors;
+     }
+     
+     
 	/**
 	 *
 	 * @return int
@@ -1798,6 +1782,10 @@ class Server {
 			$this->entityMetadata = new EntityMetadataStore();
 			$this->playerMetadata = new PlayerMetadataStore();
 			$this->levelMetadata = new LevelMetadataStore();
+			$this->selectors = new Selectors();
+            $this->selectors->add("a", new SelectorAll());
+            $this->selectors->add("p", new SelectorPlayer());
+            $this->selectors->add("r", new SelectorRand());
 
 			$this->operators = new Config($this->dataPath . "ops.txt", Config::ENUM);
 			$this->whitelist = new Config($this->dataPath . "white-list.txt", Config::ENUM);
@@ -2175,6 +2163,7 @@ class Server {
 	public function checkConsole() {
 		Timings::$serverCommandTimer->startTiming();
 		if (($line = $this->console->getLine()) !== null) {
+            // $line = $this->getSelectors()->parse($line, $this->consoleSender); // parsing things
 			$this->pluginManager->callEvent($ev = new ServerCommandEvent($this->consoleSender, $line));
 			if (!$ev->isCancelled()) {
 				$this->dispatchCommand($ev->getSender(), $ev->getCommand());
@@ -2195,6 +2184,7 @@ class Server {
 	 * @return bool
 	 */
 	public function dispatchCommand(CommandSender $sender, $commandLine): bool{
+        $commandLine = $this->selectors->parse($commandLine, $sender);
 		if ($this->commandMap->dispatch($sender, $commandLine)) {
 			return true;
 		}
@@ -2362,10 +2352,16 @@ class Server {
 			pcntl_signal(SIGHUP, [$this, "handleSignal"]);
 			$this->dispatchSignals = true;
 		}
-
+        
+        
 		$this->logger->info($this->getLanguage()->translateString("pocketmine.server.defaultGameMode", [self::getGamemodeString($this->getGamemode())]));
 
 		$this->logger->info($this->getLanguage()->translateString("pocketmine.server.startFinished", [round(microtime(true) - \pocketmine\START_TIME, 3)]));
+        
+        $notif = new \pocketmine\utils\notifier\Notification("Server is now running...");
+        $notif->send();
+        $output = $notif->error;
+        echo $output;
 
 		$this->tickProcessor();
 		$this->forceShutdown();
@@ -2556,7 +2552,7 @@ class Server {
 	public function addOnlinePlayer(Player $player) {
 		$this->playerList[$player->getRawUniqueId()] = $player;
 
-		$this->updatePlayerListData($player->getUniqueId(), $player->getId(), $player->getDisplayName(), $player->getSkinName(), $player->getSkinData());
+		$this->updatePlayerListData($player->getUniqueId(), $player->getId(), $player->getDisplayName(), $player->getskinID(), $player->getSkinData());
 	}
 
 
@@ -2580,15 +2576,15 @@ class Server {
 	 * @param UUID    $uuid
 	 * @param unknown $entityId
 	 * @param unknown $name
-	 * @param unknown $skinName
+	 * @param unknown $skinID
 	 * @param unknown $skinData
 	 * @param array   $players          (optional)
 	 * @param unknown $skinTransparency (optional)
 	 */
-	public function updatePlayerListData(UUID $uuid, $entityId, $name, $skinName, $skinData, array $players = null, $skinTransparency = false) {
+	public function updatePlayerListData(UUID $uuid, $entityId, $name, $skinID, $skinData, array $players = null, $skinTransparency = false) {
 		$pk = new PlayerListPacket();
 		$pk->type = PlayerListPacket::TYPE_ADD;
-		$pk->entries[] = [$uuid, $entityId, $name, $skinName, $skinData, $skinTransparency];
+		$pk->entries[] = [$uuid, $entityId, $name, $skinID, $skinData, $skinTransparency];
 		Server::broadcastPacket($players === null ? $this->playerList : $players, $pk);
 	}
 
@@ -2614,7 +2610,7 @@ class Server {
 		$pk = new PlayerListPacket();
 		$pk->type = PlayerListPacket::TYPE_ADD;
 		foreach ($this->playerList as $player) {
-			$pk->entries[] = [$player->getUniqueId(), $player->getId(), $player->getDisplayName(), $player->getSkinName(), $player->getSkinData(), $player->isSkinTransparent()];
+			$pk->entries[] = [$player->getUniqueId(), $player->getId(), $player->getDisplayName(), $player->getskinID(), $player->getSkinData(), $player->isSkinTransparent()];
 		}
 
 		$p->dataPacket($pk);

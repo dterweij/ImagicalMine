@@ -26,9 +26,13 @@
 namespace pocketmine\command\defaults;
 
 use pocketmine\command\CommandSender;
+use pocketmine\command\Command;
+use pocketmine\command\ConsoleCommandSender;
 use pocketmine\math\Vector3;
+use pocketmine\Server;
 use pocketmine\item\ItemBlock;
 use pocketmine\item\Item;
+use pocketmine\block\Block;
 use pocketmine\level\Level;
 use pocketmine\event\TranslationContainer;
 use pocketmine\utils\TextFormat;
@@ -49,17 +53,17 @@ class SetBlockCommand extends VanillaCommand{
 		if(!isset($args[3])) {
 			$sender->sendMessage(new TranslationContainer("commands.generic.usage", [$this->usageMessage]));
 		} else {
+            if($sender instanceof ConsoleCommandSender) {
+                $level = Server::getInstance()->getDefaultLevel();
+            } else {
+                $level = $sender->getLevel();
+            }
 			$x = $args[0];
 			$y = $args[1];
 			$z = $args[2];
-			$block = explode(":", $args[3]);
-			if(Item::fromString($block[0]) instanceof ItemBlock){
-				$level = $sender->getLevel();
-				if(!isset($block[1])) {
-					$block[1] = 0;
-				}
-				$level->setBlock(new Vector3($x, $y, $z), $block[0], $block[1]);
-				Command::broadcastCommandMessage($sender, new TranslationContainer("%commands.setblock.success", [$x, $y, $z, $block]));
+			if(Item::fromString($args[3]) instanceof ItemBlock){
+				$level->setBlock(new Vector3($x, $y, $z), new Block(Item::fromString($args[3])->getId(), Item::fromString($args[3])->getDamage()));
+				Command::broadcastCommandMessage($sender, new TranslationContainer("%commands.setblock.success", [$x, $y, $z, Item::fromString($args[3])->getName()]));
 			}
 		}
 	}

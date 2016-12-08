@@ -251,9 +251,7 @@ class PoweredRail extends ExtendedRailBlock implements RedstoneConsumer
     }
 
 
-    /**
-     *
-     */
+
     public function __toString()
     {
         $this->getName() . " facing " . $this->getDirection() . ($this->isCurve()?" on a curve ":($this->isOnSlope()?" on a slope":""));

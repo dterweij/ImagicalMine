@@ -6,29 +6,7 @@
  */
 
 
-/*
- *
- *  _                       _           _ __  __ _
- * (_)                     (_)         | |  \/  (_)
- *  _ _ __ ___   __ _  __ _ _  ___ __ _| | \  / |_ _ __   ___
- * | | '_ ` _ \ / _` |/ _` | |/ __/ _` | | |\/| | | '_ \ / _ \
- * | | | | | | | (_| | (_| | | (_| (_| | | |  | | | | | |  __/
- * |_|_| |_| |_|\__,_|\__, |_|\___\__,_|_|_|  |_|_|_| |_|\___|
- *                     __/ |
- *                    |___/
- *
- * This program is a third party build by ImagicalMine.
- *
- * PocketMine is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * @author ImagicalMine Team
- * @link http://forums.imagicalcorp.ml/
- *
- *
-*/
+
 
 namespace pocketmine\inventory;
 
@@ -478,9 +456,7 @@ class PlayerInventory extends BaseInventory
     }
 
 
-    /**
-     *
-     */
+
     public function clearAll()
     {
         $limit = $this->getSize() + 4;
@@ -732,10 +708,12 @@ class PlayerInventory extends BaseInventory
         }
 
         foreach ($this->getArmorContents() as $item) {
-            $protection += $item->getProtection();
-
-            if ($protectionEnch != null && ($ench = $item->getEnchantment($protectionEnch)) != null) {
-                $protection += floor((6 + $ench->getLevel()^2) * $modifier / 3);
+            $protection += $item->getEnchantment();
+            
+            if ($protection == Enchantment::TYPE_ARMOR_FIRE_PROTECTION || $protection == Enchantment::TYPE_ARMOR_FALL_PROTECTION || $protection == Enchantment::TYPE_ARMOR_PROJECTILE_PROTECTION || $protection == Enchantment::TYPE_ARMOR_EXPLOSION_PROTECTION) {
+                if ($protectionEnch != null && ($ench = $item->getEnchantment($protectionEnch)) != null) {
+                    $protection += floor((6 + $ench->getLevel()^2) * $modifier / 3);
+                }
             }
         }
 

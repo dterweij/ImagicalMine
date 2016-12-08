@@ -25,9 +25,7 @@ class ExperienceOrb extends Entity
 
     protected $experience = 0;
 
-    /**
-     *
-     */
+
     public function initEntity()
     {
         parent::initEntity();

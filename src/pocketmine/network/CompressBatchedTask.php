@@ -1,10 +1,4 @@
 <?php
-/**
- * src/pocketmine/network/CompressBatchedTask.php
- *
- * @package default
- */
-
 
 /*
  *
@@ -19,7 +13,7 @@
  *
  * This program is a third party build by ImagicalMine.
  *
- * PocketMine is free software: you can redistribute it and/or modify
+ * ImagicalMine is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
@@ -35,47 +29,29 @@ namespace pocketmine\network;
 use pocketmine\scheduler\AsyncTask;
 use pocketmine\Server;
 
-class CompressBatchedTask extends AsyncTask
-{
+class CompressBatchedTask extends AsyncTask{
 
-    public $level = 7;
-    public $data;
-    public $final;
-    public $targets;
+	public $level = 7;
+	public $data;
+	public $final;
+	public $targets;
 
-    /**
-     *
-     * @param unknown $data
-     * @param array   $targets
-     * @param unknown $level   (optional)
-     */
-    public function __construct($data, array $targets, $level = 7)
-    {
-        $this->data = $data;
-        $this->targets = serialize($targets);
-        $this->level = $level;
-    }
+	public function __construct($data, array $targets, $level = 7){
+		$this->data = $data;
+		$this->targets = $targets;
+		$this->level = $level;
+	}
 
+	public function onRun(){
+		try{
+			$this->final = zlib_encode($this->data, ZLIB_ENCODING_DEFLATE, $this->level);
+			$this->data = null;
+		}catch(\Throwable $e){
 
-    /**
-     *
-     */
-    public function onRun()
-    {
-        try {
-            $this->final = zlib_encode($this->data, ZLIB_ENCODING_DEFLATE, $this->level);
-            $this->data = null;
-        } catch (\Throwable $e) {
-        }
-    }
+		}
+	}
 
-
-    /**
-     *
-     * @param Server  $server
-     */
-    public function onCompletion(Server $server)
-    {
-        $server->broadcastPacketsCallback($this->final, unserialize($this->targets));
-    }
+	public function onCompletion(Server $server){
+		$server->broadcastPacketsCallback($this->final, (array) $this->targets);
+	}
 }

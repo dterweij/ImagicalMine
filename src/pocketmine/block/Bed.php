@@ -1,34 +1,5 @@
 <?php
-/**
- * src/pocketmine/block/Bed.php
- *
- * @package default
- */
 
-
-/*
- *
- *  _                       _           _ __  __ _
- * (_)                     (_)         | |  \/  (_)
- *  _ _ __ ___   __ _  __ _ _  ___ __ _| | \  / |_ _ __   ___
- * | | '_ ` _ \ / _` |/ _` | |/ __/ _` | | |\/| | | '_ \ / _ \
- * | | | | | | | (_| | (_| | | (_| (_| | | |  | | | | | |  __/
- * |_|_| |_| |_|\__,_|\__, |_|\___\__,_|_|_|  |_|_|_| |_|\___|
- *                     __/ |
- *                    |___/
- *
- * This program is a third party build by ImagicalMine.
- *
- * PocketMine is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * @author ImagicalMine Team
- * @link http://forums.imagicalcorp.ml/
- *
- *
-*/
 
 namespace pocketmine\block;
 
@@ -43,50 +14,26 @@ class Bed extends Transparent
 
     protected $id = self::BED_BLOCK;
 
-    /**
-     *
-     * @param unknown $meta (optional)
-     */
     public function __construct($meta = 0)
     {
         $this->meta = $meta;
     }
 
-
-    /**
-     *
-     * @return unknown
-     */
     public function canBeActivated()
     {
         return true;
     }
 
-
-    /**
-     *
-     * @return unknown
-     */
     public function getHardness()
     {
         return 0.2;
     }
 
-
-    /**
-     *
-     * @return unknown
-     */
     public function getName()
     {
         return "Bed Block";
     }
 
-
-    /**
-     *
-     * @return unknown
-     */
     protected function recalculateBoundingBox()
     {
         return new AxisAlignedBB(
@@ -99,13 +46,6 @@ class Bed extends Transparent
         );
     }
 
-
-    /**
-     *
-     * @param Item    $item
-     * @param Player  $player (optional)
-     * @return unknown
-     */
     public function onActivate(Item $item, Player $player = null)
     {
         $time = $this->getLevel()->getTime() % Level::TIME_FULL;
@@ -117,11 +57,11 @@ class Bed extends Transparent
             return true;
         }
 
-        $blockNorth = $this->getSide(2); //Gets the blocks around them
+        $blockNorth = $this->getSide(2); 
         $blockSouth = $this->getSide(3);
         $blockEast = $this->getSide(5);
         $blockWest = $this->getSide(4);
-        if (($this->meta & 0x08) === 0x08) { //This is the Top part of bed
+        if (($this->meta & 0x08) === 0x08) {
             $b = $this;
         } else { //Bottom Part of Bed
             if ($blockNorth->getId() === $this->id and ($blockNorth->meta & 0x08) === 0x08) {
@@ -148,19 +88,6 @@ class Bed extends Transparent
         return true;
     }
 
-
-    /**
-     *
-     * @param Item    $item
-     * @param Block   $block
-     * @param Block   $target
-     * @param unknown $face
-     * @param unknown $fx
-     * @param unknown $fy
-     * @param unknown $fz
-     * @param Player  $player (optional)
-     * @return unknown
-     */
     public function place(Item $item, Block $block, Block $target, $face, $fx, $fy, $fz, Player $player = null)
     {
         $down = $this->getSide(0);
@@ -186,21 +113,15 @@ class Bed extends Transparent
         return false;
     }
 
-
-    /**
-     *
-     * @param Item    $item
-     * @return unknown
-     */
     public function onBreak(Item $item)
     {
-        $blockNorth = $this->getSide(2); //Gets the blocks around them
+        $blockNorth = $this->getSide(2);
         $blockSouth = $this->getSide(3);
         $blockEast = $this->getSide(5);
         $blockWest = $this->getSide(4);
 
-        if (($this->meta & 0x08) === 0x08) { //This is the Top part of bed
-            if ($blockNorth->getId() === $this->id and $blockNorth->meta !== 0x08) { //Checks if the block ID and meta are right
+        if (($this->meta & 0x08) === 0x08) {
+            if ($blockNorth->getId() === $this->id and $blockNorth->meta !== 0x08) { 
                 $this->getLevel()->setBlock($blockNorth, new Air(), true, true);
             } elseif ($blockSouth->getId() === $this->id and $blockSouth->meta !== 0x08) {
                 $this->getLevel()->setBlock($blockSouth, new Air(), true, true);
@@ -209,7 +130,7 @@ class Bed extends Transparent
             } elseif ($blockWest->getId() === $this->id and $blockWest->meta !== 0x08) {
                 $this->getLevel()->setBlock($blockWest, new Air(), true, true);
             }
-        } else { //Bottom Part of Bed
+        } else {
             if ($blockNorth->getId() === $this->id and ($blockNorth->meta & 0x08) === 0x08) {
                 $this->getLevel()->setBlock($blockNorth, new Air(), true, true);
             } elseif ($blockSouth->getId() === $this->id and ($blockSouth->meta & 0x08) === 0x08) {
@@ -225,12 +146,6 @@ class Bed extends Transparent
         return true;
     }
 
-
-    /**
-     *
-     * @param Item    $item
-     * @return unknown
-     */
     public function getDrops(Item $item)
     {
         return [

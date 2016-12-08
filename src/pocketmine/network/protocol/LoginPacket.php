@@ -13,7 +13,7 @@
  *
  * This program is a third party build by ImagicalMine.
  *
- * PocketMine is free software: you can redistribute it and/or modify
+ * ImagicalMine is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
@@ -29,39 +29,74 @@ namespace pocketmine\network\protocol;
 #include <rules/DataPacket.h>
 
 
-class LoginPacket extends DataPacket
-{
-    const NETWORK_ID = Info::LOGIN_PACKET;
+class LoginPacket extends DataPacket{
+	const NETWORK_ID = Info::LOGIN_PACKET;
 
-    public $username;
-    public $protocol1;
-    public $protocol2;
-    public $clientId;
+	const EDITION_POCKET = 0;
 
-    public $clientUUID;
-    public $serverAddress;
-    public $clientSecret;
+	public $username;
+	public $protocol;
+	public $gameEdition;
+	public $clientUUID;
+	public $clientId;
+	public $identityPublicKey;
+	public $serverAddress;
 
-    public $skinName;
-    public $transparency;
-    public $skin = null;
+	public $skinId;
+	public $skin = null;
 
-    public function decode()
-    {
-        $this->username = $this->getString();
-        $this->protocol1 = $this->getInt();
-        $this->protocol2 = $this->getInt();
-        $this->clientId = $this->getLong();
-        $this->clientUUID = $this->getUUID();
-        $this->serverAddress = $this->getString();
-        $this->clientSecret = $this->getString();
+	public function decode(){
+		$this->protocol = $this->getInt();
 
-        $this->skinName = $this->getString();
-        $this->transparency = false; //$this->getByte() > 0;
-        $this->skin = $this->getString();
-    }
+		if($this->protocol !== Info::CURRENT_PROTOCOL){
+			return; //Do not attempt to decode for non-accepted protocols
+		}
 
-    public function encode()
-    {
-    }
+		$this->gameEdition = $this->getByte();
+
+		$str = zlib_decode($this->getString(), 1024 * 1024 * 64);
+
+		$this->setBuffer($str, 0);
+
+		$chainData = json_decode($this->get($this->getLInt()));
+		foreach($chainData->{"chain"} as $chain){
+			$webtoken = $this->decodeToken($chain);
+			if(isset($webtoken["extraData"])){
+				if(isset($webtoken["extraData"]["displayName"])){
+					$this->username = $webtoken["extraData"]["displayName"];
+				}
+				if(isset($webtoken["extraData"]["identity"])){
+					$this->clientUUID = $webtoken["extraData"]["identity"];
+				}
+				if(isset($webtoken["identityPublicKey"])){
+					$this->identityPublicKey = $webtoken["identityPublicKey"];
+				}
+			}
+		}
+
+		$skinToken = $this->decodeToken($this->get($this->getLInt()));
+		if(isset($skinToken["ClientRandomId"])){
+			$this->clientId = $skinToken["ClientRandomId"];
+		}
+		if(isset($skinToken["ServerAddress"])){
+			$this->serverAddress = $skinToken["ServerAddress"];
+		}
+		if(isset($skinToken["SkinData"])){
+			$this->skin = base64_decode($skinToken["SkinData"]);
+		}
+		if(isset($skinToken["SkinId"])){
+			$this->skinId = $skinToken["SkinId"];
+		}
+	}
+
+	public function encode(){
+
+	}
+
+	public function decodeToken($token){
+		$tokens = explode(".", $token);
+		list($headB64, $payloadB64, $sigB64) = $tokens;
+
+		return json_decode(base64_decode($payloadB64), true);
+	}
 }

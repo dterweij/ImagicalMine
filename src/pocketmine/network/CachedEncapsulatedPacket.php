@@ -1,10 +1,4 @@
 <?php
-/**
- * src/pocketmine/network/CachedEncapsulatedPacket.php
- *
- * @package default
- */
-
 
 /*
  *
@@ -19,7 +13,7 @@
  *
  * This program is a third party build by ImagicalMine.
  *
- * PocketMine is free software: you can redistribute it and/or modify
+ * ImagicalMine is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
@@ -34,18 +28,11 @@ namespace pocketmine\network;
 
 use raklib\protocol\EncapsulatedPacket;
 
-class CachedEncapsulatedPacket extends EncapsulatedPacket
-{
+class CachedEncapsulatedPacket extends EncapsulatedPacket{
 
-    private $internalData = null;
+	private $internalData = null;
 
-    /**
-     *
-     * @param unknown $internal (optional)
-     * @return unknown
-     */
-    public function toBinary($internal = false)
-    {
-        return $this->internalData === null ? ($this->internalData = parent::toBinary($internal)) : $this->internalData;
-    }
+	public function toBinary($internal = false){
+		return $this->internalData === null ? ($this->internalData = parent::toBinary($internal)) : $this->internalData;
+	}
 }

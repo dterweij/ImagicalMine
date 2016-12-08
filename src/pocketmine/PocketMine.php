@@ -24,6 +24,9 @@
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
+ * @author ImagicalMine Team
+ * @link http://forums.imagicalmine.net/
+ *
  *
 */
 
@@ -92,11 +95,11 @@ namespace pocketmine {
     use pocketmine\utils\Utils;
     use pocketmine\wizard\Installer;
 
-    const VERSION = "1.5";
+    const VERSION = "1.6";
     const API_VERSION = "2.0.0";//API version.(plugin api version)
-    const CODENAME = "REACTIVE";
-    const MINECRAFT_VERSION = "v0.15.0.1 alpha- The Friendly Update";
-    const MINECRAFT_VERSION_NETWORK = "0.15.0.1";
+    const CODENAME = "ELITE";
+    const MINECRAFT_VERSION = "v0.16.0 alpha";
+    const MINECRAFT_VERSION_NETWORK = "0.16.0";
 
     /*
      * Startup code. Do not look at it, it may harm you.
@@ -448,8 +451,8 @@ namespace pocketmine {
     if (substr_count($pthreads_version, ".") < 2) {
         $pthreads_version = "0.$pthreads_version";
     }
-    if (version_compare($pthreads_version, "3.1.5") < 0) {
-        $logger->critical("pthreads >= 3.1.5 is required, while you have $pthreads_version.");
+    if (version_compare($pthreads_version, "3.1.6") < 0) {
+        $logger->critical("pthreads >= 3.1.6 is required, while you have $pthreads_version.");
         ++$errors;
     }
 

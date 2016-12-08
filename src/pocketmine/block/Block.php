@@ -6,29 +6,7 @@
  */
 
 
-/*
- *
- *  _                       _           _ __  __ _
- * (_)                     (_)         | |  \/  (_)
- *  _ _ __ ___   __ _  __ _ _  ___ __ _| | \  / |_ _ __   ___
- * | | '_ ` _ \ / _` |/ _` | |/ __/ _` | | |\/| | | '_ \ / _ \
- * | | | | | | | (_| | (_| | | (_| (_| | | |  | | | | | |  __/
- * |_|_| |_| |_|\__,_|\__, |_|\___\__,_|_|_|  |_|_|_| |_|\___|
- *                     __/ |
- *                    |___/
- *
- * This program is a third party build by ImagicalMine.
- *
- * PocketMine is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * @author ImagicalMine Team
- * @link http://forums.imagicalcorp.ml/
- *
- *
-*/
+
 
 /**
  * All Block classes are in here
@@ -423,9 +401,7 @@ class Block extends Position implements Metadatable
     }
 
 
-    /**
-     *
-     */
+
     public static function init()
     {
         if (self::$list === null) {
@@ -675,6 +651,8 @@ class Block extends Position implements Metadatable
             self::$list[self::STONECUTTER] = Stonecutter::class;
             self::$list[self::GLOWING_OBSIDIAN] = GlowingObsidian::class;
             self::$list[self::NETHER_REACTOR] = NetherReactor::class;
+            
+            self::$list[self::SLIME_BLOCK] = SlimeBlock::class;
             // self::$list[self::RESERVED] = Reserved::class;
 
             foreach (self::$list as $id => $class) {

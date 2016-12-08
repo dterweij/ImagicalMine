@@ -39,9 +39,7 @@ class Mycelium extends Solid
 
     protected $id = self::MYCELIUM;
 
-    /**
-     *
-     */
+
     public function __construct()
     {
     }

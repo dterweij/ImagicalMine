@@ -62,9 +62,7 @@ class Boat extends Entity
     }
 
 
-    /**
-     *
-     */
+
     public function kill()
     {
         parent::kill();

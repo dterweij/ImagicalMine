@@ -43,9 +43,7 @@ class SnowGolem extends Animal
     public $width = 1.281;
     public $lenght = 0.688;
 
-    /**
-     *
-     */
+
     public function initEntity()
     {
         $this->setMaxHealth(4);

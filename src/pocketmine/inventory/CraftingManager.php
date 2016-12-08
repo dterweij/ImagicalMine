@@ -6,29 +6,7 @@
  */
 
 
-/*
- *
- *  _                       _           _ __  __ _
- * (_)                     (_)         | |  \/  (_)
- *  _ _ __ ___   __ _  __ _ _  ___ __ _| | \  / |_ _ __   ___
- * | | '_ ` _ \ / _` |/ _` | |/ __/ _` | | |\/| | | '_ \ / _ \
- * | | | | | | | (_| | (_| | | (_| (_| | | |  | | | | | |  __/
- * |_|_| |_| |_|\__,_|\__, |_|\___\__,_|_|_|  |_|_|_| |_|\___|
- *                     __/ |
- *                    |___/
- *
- * This program is a third party build by ImagicalMine.
- *
- * PocketMine is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * @author ImagicalMine Team
- * @link http://forums.imagicalcorp.ml/
- *
- *
-*/
+
 namespace pocketmine\inventory;
 
 use pocketmine\block\Flower;
@@ -55,9 +33,7 @@ class CraftingManager
 
     private static $RECIPE_COUNT = 0;
 
-    /**
-     *
-     */
+
     public function __construct()
     {
         $this->registerFurnace();
@@ -859,9 +835,7 @@ class CraftingManager
     }
 
 
-    /**
-     *
-     */
+
     protected function registerFurnace()
     {
         $this->registerRecipe(new FurnaceRecipe(Item::get(Item::STONE, 0, 1), Item::get(Item::COBBLESTONE, 0, 1)));
@@ -892,9 +866,7 @@ class CraftingManager
     }
 
 
-    /**
-     *
-     */
+
     public function registerBrewing()
     {
         $this->registerRecipe(new BrewingRecipe(Item::get(Item::POTION, Potion::AWKWARD, 1), Item::get(Item::NETHER_WART, 0, 1), Item::get(Item::POTION, Potion::WATER_BOTTLE, 1)));
@@ -950,9 +922,7 @@ class CraftingManager
     }
 
 
-    /**
-     *
-     */
+
     protected function registerFood()
     {
         $this->registerRecipe((new ShapelessRecipe(Item::get(Item::MELON_SEEDS, 0, 1)))->addIngredient(Item::get(Item::MELON_SLICE, 0, 1)));
@@ -998,9 +968,7 @@ class CraftingManager
     }
 
 
-    /**
-     *
-     */
+
     protected function registerArmor()
     {
         $types = [
@@ -1040,9 +1008,7 @@ class CraftingManager
     }
 
 
-    /**
-     *
-     */
+
     protected function registerWeapons()
     {
         $types = [
@@ -1075,9 +1041,7 @@ class CraftingManager
     }
 
 
-    /**
-     *
-     */
+
     protected function registerTools()
     {
         $types = [
@@ -1127,9 +1091,7 @@ class CraftingManager
     }
 
 
-    /**
-     *
-     */
+
     protected function registerDyes()
     {
         for ($i = 0; $i < 16; ++$i) {

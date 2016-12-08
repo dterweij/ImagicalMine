@@ -1,60 +1,25 @@
 <?php
-/**
- * src/pocketmine/item/PoisonousPotato.php
- *
- * @package default
- */
-
-
-/*
- *
- *  _                       _           _ __  __ _
- * (_)                     (_)         | |  \/  (_)
- *  _ _ __ ___   __ _  __ _ _  ___ __ _| | \  / |_ _ __   ___
- * | | '_ ` _ \ / _` |/ _` | |/ __/ _` | | |\/| | | '_ \ / _ \
- * | | | | | | | (_| | (_| | | (_| (_| | | |  | | | | | |  __/
- * |_|_| |_| |_|\__,_|\__, |_|\___\__,_|_|_|  |_|_|_| |_|\___|
- *                     __/ |
- *                    |___/
- *
- * This program is a third party build by ImagicalMine.
- *
- * PocketMine is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * @author ImagicalMine Team
- * @link http://forums.imagicalcorp.ml/
- *
- *
-*/
-
 namespace pocketmine\item;
 
 use pocketmine\entity\Effect;
 
-class PoisonousPotato extends Food
-{
-    public $saturation = 1;
+class PoisonousPotato extends Food{
 
-    /**
-     *
-     * @param unknown $meta  (optional)
-     * @param unknown $count (optional)
-     */
-    public function __construct($meta = 0, $count = 1)
-    {
-        parent::__construct(self::POISONOUS_POTATO, 0, $count, "Poisonous Potato");
-    }
+	public function __construct($meta = 0, $count = 1){
+		parent::__construct(self::POISONOUS_POTATO, 0, $count, "Poisonous Potato");
+	}
+	
+	public function getFoodRestore(){
+		return 1;
+	}
 
+	public function getSaturationRestore(){
+		return 1.2;//TODO: check value
+	}
 
-    /**
-     *
-     * @return unknown
-     */
-    public function getEffects()
-    {
-        return [[Effect::getEffect(Effect::POISON)->setDuration(4 * 20), 0.6]];
-    }
+	public function getAdditionalEffects(){
+		if(mt_rand(0, 10) < 6){
+			Effect::getEffect(Effect::POISON)->setDuration(4 * 20);
+		}
+	}
 }

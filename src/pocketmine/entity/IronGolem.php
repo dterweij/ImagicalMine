@@ -43,9 +43,7 @@ class IronGolem extends Animal
     public $width = 1.625;
     public $length = 0.906;
 
-    /**
-     *
-     */
+
     public function initEntity()
     {
         $this->setMaxHealth(100);

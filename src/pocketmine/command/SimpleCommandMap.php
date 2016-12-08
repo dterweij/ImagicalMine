@@ -6,29 +6,7 @@
  */
 
 
-/*
- *
- *  _                       _           _ __  __ _
- * (_)                     (_)         | |  \/  (_)
- *  _ _ __ ___   __ _  __ _ _  ___ __ _| | \  / |_ _ __   ___
- * | | '_ ` _ \ / _` |/ _` | |/ __/ _` | | |\/| | | '_ \ / _ \
- * | | | | | | | (_| | (_| | | (_| (_| | | |  | | | | | |  __/
- * |_|_| |_| |_|\__,_|\__, |_|\___\__,_|_|_|  |_|_|_| |_|\___|
- *                     __/ |
- *                    |___/
- *
- * This program is a third party build by ImagicalMine.
- *
- * PocketMine is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * @author ImagicalMine Team
- * @link http://forums.imagicalcorp.ml/
- *
- *
-*/
+
 
 namespace pocketmine\command;
 
@@ -70,9 +48,11 @@ use pocketmine\command\defaults\StatusCommand;
 use pocketmine\command\defaults\StopCommand;
 use pocketmine\command\defaults\TeleportCommand;
 use pocketmine\command\defaults\TellCommand;
+use pocketmine\command\defaults\TellRawCommand;
 use pocketmine\command\defaults\SetBlockCommand;
 use pocketmine\command\defaults\TimeCommand;
 use pocketmine\command\defaults\TimingsCommand;
+use pocketmine\command\defaults\TitleCommand;
 use pocketmine\command\defaults\VanillaCommand;
 use pocketmine\command\defaults\VersionCommand;
 use pocketmine\command\defaults\WeatherCommand;
@@ -106,9 +86,7 @@ class SimpleCommandMap implements CommandMap
     }
 
 
-    /**
-     *
-     */
+
     private function setDefaultCommands()
     {
         $this->register("pocketmine", new FillCommand("fill"));
@@ -148,8 +126,10 @@ class SimpleCommandMap implements CommandMap
         $this->register("pocketmine", new SpawnpointCommand("spawnpoint"));
         $this->register("pocketmine", new SetWorldSpawnCommand("setworldspawn"));
         $this->register("pocketmine", new TeleportCommand("tp"));
+        $this->register("pocketmine", new TellRawCommand("tellraw"));
         $this->register("pocketmine", new TimeCommand("time"));
         $this->register("pocketmine", new TimingsCommand("timings"));
+        $this->register("pocketmine", new TitleCommand("title"));
         $this->register("pocketmine", new ReloadCommand("reload"));
         $this->register("pocketmine", new SetBlockCommand("setblock"));
         $this->register("pocketmine", new WeatherCommand("weather"));
@@ -248,8 +228,9 @@ class SimpleCommandMap implements CommandMap
      */
     public function dispatch(CommandSender $sender, $commandLine)
     {
+           
         $args = explode(" ", $commandLine);
-
+        
         if (count($args) === 0) {
             return false;
         }
@@ -275,9 +256,7 @@ class SimpleCommandMap implements CommandMap
     }
 
 
-    /**
-     *
-     */
+
     public function clearCommands()
     {
         foreach ($this->knownCommands as $command) {

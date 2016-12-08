@@ -6,29 +6,7 @@
  */
 
 
-/*
- *
- *  _                       _           _ __  __ _
- * (_)                     (_)         | |  \/  (_)
- *  _ _ __ ___   __ _  __ _ _  ___ __ _| | \  / |_ _ __   ___
- * | | '_ ` _ \ / _` |/ _` | |/ __/ _` | | |\/| | | '_ \ / _ \
- * | | | | | | | (_| | (_| | | (_| (_| | | |  | | | | | |  __/
- * |_|_| |_| |_|\__,_|\__, |_|\___\__,_|_|_|  |_|_|_| |_|\___|
- *                     __/ |
- *                    |___/
- *
- * This program is a third party build by ImagicalMine.
- *
- * PocketMine is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * @author ImagicalMine Team
- * @link http://forums.imagicalcorp.ml/
- *
- *
-*/
+
 
 namespace pocketmine\command;
 
@@ -44,9 +22,7 @@ class ConsoleCommandSender implements CommandSender
 
     private $perm;
 
-    /**
-     *
-     */
+
     public function __construct()
     {
         $this->perm = new PermissibleBase($this);
@@ -99,9 +75,7 @@ class ConsoleCommandSender implements CommandSender
     }
 
 
-    /**
-     *
-     */
+
     public function recalculatePermissions()
     {
         $this->perm->recalculatePermissions();
@@ -116,8 +90,52 @@ class ConsoleCommandSender implements CommandSender
     {
         return $this->perm->getEffectivePermissions();
     }
-
-
+    
+    
+    
+    public function sendPopup(string $message, $title = null) { // This will send an notify to the person
+    switch(true) {
+            
+            
+            
+            case stristr(PHP_OS, 'DAR'): // Mac
+            exec('osascript -e \'display notification "' . $message . '" with title "' . $title . '"\'');
+            exec('osascript -e \'beep\'');
+            break;
+            
+            
+            case stristr(PHP_OS, 'WIN'): // Windows
+            exec("cscript MessageBox.vbs {$message}");
+            break;
+            
+            
+            case stristr(PHP_OS, "LINUX"): // Linux
+            exec('notify-send "' . $message . '"');
+            break;
+        }
+    }
+    
+    public function sendTip(string $message, $title = null, array $buttons = ["Close"] /*For MACOSX and Linux*/) { // This will send an alert to the owner
+        switch(true) {
+            
+            
+            
+            case stristr(PHP_OS, 'DAR'): // Mac
+            exec('osascript -e \'display dialog "' . $message . '" with icon note buttons {"' . implode('", "', $buttons) . '"} default button {"' . $buttons[0] . '"}\'');
+            break;
+            
+            
+            case stristr(PHP_OS, 'WIN'): // Windows
+            $message = htmlspecialchars($message);
+            exec("mshta javascript:alert('{$message}');window.close();");
+            break;
+            
+            
+            case stristr(PHP_OS, "LINUX"): // Linux
+            exec('dialog --title "' . $title . '"  --nook--cancel-label "Ok" --msgbox "' . $message . '" off 2> $FICHTMP');
+            break;
+        }
+    }
     /**
      *
      * @return bool

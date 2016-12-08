@@ -37,9 +37,7 @@ use pocketmine\Player;
 class ChargedCreeper extends Creeper
 {
 
-    /**
-     *
-     */
+
     public function initEntity()
     {
         $this->setMaxHealth(20);

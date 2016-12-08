@@ -136,9 +136,7 @@ abstract class RailBlock extends Flowable
     }
 
 
-    /**
-     *
-     */
+
     public function __toString()
     {
         $this->getName() . " facing " . $this->getDirection() . ($this->isCurve()?" on a curve ":($this->isOnSlope()?" on a slope":""));

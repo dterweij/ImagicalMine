@@ -1,47 +1,48 @@
 <?php
-/**
- * src/pocketmine/item/Camera.php
- *
- * @package default
- */
-
-
-/*
- *
- *  _                       _           _ __  __ _
- * (_)                     (_)         | |  \/  (_)
- *  _ _ __ ___   __ _  __ _ _  ___ __ _| | \  / |_ _ __   ___
- * | | '_ ` _ \ / _` |/ _` | |/ __/ _` | | |\/| | | '_ \ / _ \
- * | | | | | | | (_| | (_| | | (_| (_| | | |  | | | | | |  __/
- * |_|_| |_| |_|\__,_|\__, |_|\___\__,_|_|_|  |_|_|_| |_|\___|
- *                     __/ |
- *                    |___/
- *
- * This program is a third party build by ImagicalMine.
- *
- * PocketMine is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * @author ImagicalMine Team
- * @link http://forums.imagicalcorp.ml/
- *
- *
-*/
-
 namespace pocketmine\item;
 
-class Camera extends Item
-{
+use pocketmine\level\Level;
+use pocketmine\Player;
+use pocketmine\block\Block;
+use pocketmine\entity\TripoidCamera;
+use pocketmine\nbt\tag\CompoundTag;
+use pocketmine\nbt\tag\ListTag;
+use pocketmine\nbt\tag\DoubleTag;
+use pocketmine\nbt\tag\FloatTag;
 
-    /**
-     *
-     * @param unknown $meta  (optional)
-     * @param unknown $count (optional)
-     */
-    public function __construct($meta = 0, $count = 1)
-    {
-        parent::__construct(self::CAMERA, $meta, $count, "Camera");
-    }
+class Camera extends Item{
+	public function __construct($meta = 0, $count = 1){
+		parent::__construct(self::CAMERA, $meta, $count, "Camera");
+	}
+	
+	public function canBeActivated(){
+		return false;
+	}
+	
+	public function onActivate(Level $level, Player $player, Block $block, Block $target, $face, $fx, $fy, $fz){
+		$realPos = $target->getSide($face)->add(0.5, 0.4, 0.5);
+		$camera = new TripoidCamera($player->getLevel()->getChunk($realPos->getX() >> 4, $realPos->getZ() >> 4), new CompoundTag("", [
+				"Pos" => new ListTag("Pos", [
+						new DoubleTag("", $realPos->getX()),
+						new DoubleTag("", $realPos->getY()),
+						new DoubleTag("", $realPos->getZ())
+				]),
+				"Motion" => new ListTag("Motion", [
+						new DoubleTag("", 0),
+						new DoubleTag("", 0),
+						new DoubleTag("", 0)
+				]),
+				"Rotation" => new ListTag("Rotation", [
+						new FloatTag("", 0),
+						new FloatTag("", 0)
+				]),
+		]));
+		$camera->spawnToAll();
+		if($player->isSurvival()){
+			--$this->count;
+		}
+	
+		return true;
+	}
 }
+

@@ -1,27 +1,51 @@
 <?php
 
+/*
+ *
+ *  _                       _           _ __  __ _
+ * (_)                     (_)         | |  \/  (_)
+ *  _ _ __ ___   __ _  __ _ _  ___ __ _| | \  / |_ _ __   ___
+ * | | '_ ` _ \ / _` |/ _` | |/ __/ _` | | |\/| | | '_ \ / _ \
+ * | | | | | | | (_| | (_| | | (_| (_| | | |  | | | | | |  __/
+ * |_|_| |_| |_|\__,_|\__, |_|\___\__,_|_|_|  |_|_|_| |_|\___|
+ *                     __/ |
+ *                    |___/
+ *
+ * This program is a third party build by ImagicalMine.
+ *
+ * ImagicalMine is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * @author ImagicalMine Team
+ * @link http://forums.imagicalcorp.ml/
+ *
+ *
+*/
+
 namespace pocketmine\network\protocol;
 
-class PlayerInputPacket extends DataPacket
-{
-    const NETWORK_ID = Info::PLAYER_INPUT_PACKET;
+#include <rules/DataPacket.h>
 
-    public $motX;
-    public $motY;
 
-    public $jumping;
-    public $sneaking;
+class PlayerInputPacket extends DataPacket{
+	const NETWORK_ID = Info::PLAYER_INPUT_PACKET;
 
-    public function decode()
-    {
-        $this->motX = $this->getFloat();
-        $this->motY = $this->getFloat();
-        $flags = $this->getByte();
-        $this->jumping = (($flags & 0x80) > 0);
-        $this->sneaking = (($flags & 0x40) > 0);
-    }
+	public $motionX;
+	public $motionY;
+	public $unknownBool1;
+	public $unknownBool2;
 
-    public function encode()
-    {
-    }
+	public function decode(){
+		$this->motionX = $this->getLFloat();
+		$this->motionY = $this->getLFloat();
+		$this->unknownBool1 = $this->getBool();
+		$this->unknownBool2 = $this->getBool();
+	}
+
+	public function encode(){
+
+	}
+
 }

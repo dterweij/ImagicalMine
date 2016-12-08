@@ -1,11 +1,4 @@
 <?php
-/**
- * src/pocketmine/block/ActivatorRail.php
- *
- * @package default
- */
-
-
 namespace pocketmine\block;
 
 use pocketmine\item\Item;
@@ -23,52 +16,27 @@ class ActivatorRail extends ExtendedRailBlock implements RedstoneConsumer
     const SIDE_SOUTH_EAST = 8;
     const SIDE_SOUTH_WEST = 9;
 
-    /**
-     *
-     * @param unknown $meta (optional)
-     */
     public function __construct($meta = 0)
     {
         $this->meta = $meta;
     }
 
-
-    /**
-     *
-     * @return unknown
-     */
     public function getName()
     {
         return "Activator Rail";
     }
 
-
-    /**
-     *
-     * @return unknown
-     */
     public function getHardness()
     {
         return 0.1;
     }
 
-
-    /**
-     *
-     * @return unknown
-     */
     public function getToolType()
     {
         return Tool::TYPE_PICKAXE;
     }
 
 
-
-    /**
-     *
-     * @param unknown $type
-     * @return unknown
-     */
     public function onUpdate($type)
     {
         if ($type === Level::BLOCK_UPDATE_NORMAL) {
@@ -80,44 +48,22 @@ class ActivatorRail extends ExtendedRailBlock implements RedstoneConsumer
         return false;
     }
 
-
-    /**
-     *
-     * @param unknown $type
-     * @param unknown $power
-     */
     public function onRedstoneUpdate($type, $power)
     {
         if ($this->isPowered()) {
             $this->togglePowered();
         }
     }
-
-
-    /**
-     *
-     * @param Item    $item
-     * @return unknown
-     */
     public function getDrops(Item $item)
     {
         return [[Item::ACTIVATOR_RAIL, 0, 1]];
     }
 
-
-    /**
-     *
-     * @return unknown
-     */
     public function isPowered()
     {
         return ($this->meta & 0x08) === 0x08;
     }
 
-
-    /**
-     * Toggles the current state of this plate
-     */
     public function togglePowered()
     {
         $this->meta ^= 0x08;
@@ -125,12 +71,6 @@ class ActivatorRail extends ExtendedRailBlock implements RedstoneConsumer
         $this->getLevel()->setBlock($this, $this, true, true);
     }
 
-
-    /**
-     *
-     * @param unknown $face
-     * @param unknown $isOnSlope (optional)
-     */
     public function setDirection($face, $isOnSlope=false)
     {
         $extrabitset=(($this->meta&0x08)===0x08);
@@ -142,30 +82,12 @@ class ActivatorRail extends ExtendedRailBlock implements RedstoneConsumer
     }
 
 
-
-    /**
-     *
-     * @return unknown
-     */
     public function isCurve()
     {
         return false;
     }
 
 
-
-    /**
-     *
-     * @param Item    $item
-     * @param Block   $block
-     * @param Block   $target
-     * @param unknown $face
-     * @param unknown $fx
-     * @param unknown $fy
-     * @param unknown $fz
-     * @param Player  $player (optional)
-     * @return unknown
-     */
     public function place(Item $item, Block $block, Block $target, $face, $fx, $fy, $fz, Player $player = null)
     {
         $down=$block->getSide(Vector3::SIDE_DOWN);
@@ -197,10 +119,6 @@ class ActivatorRail extends ExtendedRailBlock implements RedstoneConsumer
     }
 
 
-    /**
-     *
-     * @return unknown
-     */
     public function getDirection()
     {
         switch ($this->meta) {
@@ -252,19 +170,11 @@ class ActivatorRail extends ExtendedRailBlock implements RedstoneConsumer
     }
 
 
-    /**
-     *
-     */
     public function __toString()
     {
         $this->getName() . " facing " . $this->getDirection() . ($this->isCurve()?" on a curve ":($this->isOnSlope()?" on a slope":""));
     }
 
-
-    /**
-     *
-     * @return unknown
-     */
     public function isOnSlope()
     {
         $d = $this->meta;
